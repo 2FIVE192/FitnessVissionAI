@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: fitness
+      POSTGRES_PASSWORD: fitness
+      POSTGRES_DB: fitness_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fitness -d fitness_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgresql://fitness:fitness@postgres:5432/fitness_db
+      JWT_SECRET: super-secret-university-project-key
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -c "node dist/database/migrate.js && node dist/database/seed.js && node dist/main"
+
+volumes:
+  pgdata:
