@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+
+# virtual environments
+.venv/
+venv/
+env/
+
+# generated images from test runs
+*.jpg
+*.png
+
+# env files
+.env

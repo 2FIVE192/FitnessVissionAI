@@ -1,0 +1,12 @@
+# Claude Code session data
+.claude/
+
+# Dependency directories
+node_modules/
+
+# Environment files
+.env
+.env.local
+
+# Cloudflare tunnel binary
+cloudflare/
