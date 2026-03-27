@@ -1,0 +1,10 @@
+# PyTorch must be installed separately before this file — the correct wheel depends on your CUDA version.
+# For CUDA 12.x (e.g. RTX 3060 Ti with driver 525+):
+#   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+fastapi
+uvicorn[standard]
+diffusers>=0.21.0
+transformers
+accelerate
+Pillow
+python-multipart
