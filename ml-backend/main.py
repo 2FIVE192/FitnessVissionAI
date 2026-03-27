@@ -11,7 +11,6 @@ from PIL import Image
 from aggregator import aggregate_activities
 from prompt_builder import build_prompt
 
-# ── Constants ────────────────────────────────────────────────────────────────
 
 MODEL_ID       = "runwayml/stable-diffusion-v1-5"
 DEVICE         = "cuda" if torch.cuda.is_available() else "cpu"
@@ -22,14 +21,11 @@ STRENGTH       = 0.45
 GUIDANCE_SCALE = 7.5
 NUM_STEPS      = 28
 
-# ── Global state ─────────────────────────────────────────────────────────────
 
 pipe: StableDiffusionImg2ImgPipeline | None = None
 # Serializes generation requests — the SD pipeline is not thread-safe
 gen_lock = asyncio.Lock()
 
-
-# ── Startup / shutdown ────────────────────────────────────────────────────────
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -57,7 +53,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-# ── Generation helper (runs in thread pool) ───────────────────────────────────
 
 def _generate_sync(image: Image.Image, prompt: str, negative_prompt: str) -> bytes:
     with torch.inference_mode():
@@ -74,7 +69,6 @@ def _generate_sync(image: Image.Image, prompt: str, negative_prompt: str) -> byt
     return buf.getvalue()
 
 
-# ── Endpoint ──────────────────────────────────────────────────────────────────
 
 @app.post("/generate")
 async def generate(
