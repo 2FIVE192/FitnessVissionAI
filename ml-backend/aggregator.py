@@ -39,17 +39,14 @@ def aggregate_activities(
     total_steps    = avg_steps_per_day * period_days
     total_calories = avg_calories_per_day * active_days
 
-    # Fat loss from activity (7700 kcal = 1 kg, efficiency factor 0.65)
     fat_loss = round(
         min(total_calories / 7700 * 0.65, current_weight_kg * 0.15), 2
     )
 
-    # Muscle gain (strength training only)
     muscle_gain = round(
         min(active_days_per_week / 7 * 0.7 * period_months, 4.0), 2
     ) if activity_type == "strength" else 0.0
 
-    # Weight gain from inactivity
     inactivity_factor = (
         max(0, 1 - avg_steps_per_day / 5000) * 0.6 +
         max(0, 1 - avg_calories_per_day / 200) * 0.4
