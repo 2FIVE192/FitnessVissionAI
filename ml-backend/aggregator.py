@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-SCORE_GAIN_WEIGHT = 15  # score < 15  → weight gain mode
-SCORE_MOTIVATE    = 40  # score 15-40 → motivate mode
-                        # score >= 40 → real progress mode
+SCORE_GAIN_WEIGHT = 15  # score < 15  → набора веса
+SCORE_MOTIVATE    = 40  # score 15-40 → мотивация
+                        # score >= 40 → прогресс
 
 
 @dataclass
@@ -20,7 +20,7 @@ class AggregatedStats:
     bmi_after: float
     activity_score: float
     score_zone: str
-    prompt_type: str  # 'gain_weight' | 'motivate' | 'real_progress'
+    prompt_type: str  
     goal: str
 
 
@@ -39,14 +39,17 @@ def aggregate_activities(
     total_steps    = avg_steps_per_day * period_days
     total_calories = avg_calories_per_day * active_days
 
+    # Потеря жира в результате физической активности (7700 kcal = 1 kg, коэффициент полезного действия 0.65)
     fat_loss = round(
         min(total_calories / 7700 * 0.65, current_weight_kg * 0.15), 2
     )
 
+    # Увеличение мышечной массы 
     muscle_gain = round(
         min(active_days_per_week / 7 * 0.7 * period_months, 4.0), 2
     ) if activity_type == "strength" else 0.0
 
+    # Увеличение веса в результате бездействия
     inactivity_factor = (
         max(0, 1 - avg_steps_per_day / 5000) * 0.6 +
         max(0, 1 - avg_calories_per_day / 200) * 0.4
