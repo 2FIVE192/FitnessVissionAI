@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Post, Body, Req, UseGuards,
+  Controller, Get, Post, Body, Req, UseGuards, Query, ParseIntPipe, DefaultValuePipe,
 } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { ActivityService } from './activity.service';
@@ -13,6 +13,15 @@ export class ActivityController {
   @Get('today')
   async getToday(@Req() req: any) {
     return this.activityService.getTodayActivity(req.userId);
+  }
+
+  @Get('history')
+  async getHistory(
+    @Req() req: any,
+    @Query('days', new DefaultValuePipe(7), ParseIntPipe) days: number,
+  ) {
+    const clampedDays = Math.min(Math.max(days, 1), 90);
+    return this.activityService.getActivityHistory(req.userId, clampedDays);
   }
 
   // called by the step counter worker to sync steps to backend

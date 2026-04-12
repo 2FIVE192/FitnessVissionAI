@@ -56,6 +56,38 @@ export class ActivityService {
     return { date, steps, burnedCalories: calories, distanceKm };
   }
 
+  async getActivityHistory(userId: string, days: number) {
+    const rows = await this.db.query(
+      `SELECT date, steps, burned_calories, distance_km
+       FROM daily_activities
+       WHERE user_id = $1
+         AND date >= CURRENT_DATE - ($2 - 1) * INTERVAL '1 day'
+       ORDER BY date ASC`,
+      [userId, days],
+    );
+
+    // Build a full list filling missing days with zeros
+    const result: { date: string; steps: number; burnedCalories: number; distanceKm: number }[] = [];
+    const today = new Date();
+    const rowMap = new Map<string, (typeof rows.rows)[0]>();
+    for (const row of rows.rows) {
+      rowMap.set(row.date instanceof Date ? row.date.toISOString().slice(0, 10) : String(row.date).slice(0, 10), row);
+    }
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const key = d.toISOString().slice(0, 10);
+      const row = rowMap.get(key);
+      result.push({
+        date: key,
+        steps: row ? row.steps : 0,
+        burnedCalories: row ? row.burned_calories : 0,
+        distanceKm: row ? row.distance_km : 0,
+      });
+    }
+    return result;
+  }
+
   async saveManualActivity(userId: string, steps: number, caloriesBurned: number) {
     const today = new Date().toISOString().slice(0, 10);
 
