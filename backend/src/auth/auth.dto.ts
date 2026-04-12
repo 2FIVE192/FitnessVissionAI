@@ -1,4 +1,7 @@
-import { IsString, MinLength, IsIn, IsNumber, IsPositive, IsInt, IsOptional } from 'class-validator';
+import {
+  IsString, MinLength, MaxLength, IsIn, IsNumber, IsPositive,
+  IsInt, IsOptional, Min, Max, IsDateString,
+} from 'class-validator';
 
 // -- login --
 
@@ -17,37 +20,48 @@ export class LoginDto {
 export class RegisterDto {
   @IsString()
   @MinLength(1)
+  @MaxLength(100)
   name: string;
 
   @IsString()
   @MinLength(3)
+  @MaxLength(50)
   username: string;
 
   @IsString()
   @MinLength(4)
+  @MaxLength(100)
   password: string;
 
   @IsIn(['MALE', 'FEMALE'])
   gender: string;
 
-  @IsString()
+  @IsDateString()
   dateOfBirth: string;
 
+  // realistic human weight: 20–300 kg
   @IsNumber()
-  @IsPositive()
+  @Min(20)
+  @Max(300)
   weightKg: number;
 
+  // realistic human height: 100–250 cm
   @IsNumber()
-  @IsPositive()
+  @Min(100)
+  @Max(250)
   heightCm: number;
 
+  // daily steps goal: 500–50 000
   @IsInt()
-  @IsPositive()
+  @Min(500)
+  @Max(50000)
   @IsOptional()
   dailyStepsGoal?: number;
 
+  // daily calories goal: 50–5 000 kcal
   @IsInt()
-  @IsPositive()
+  @Min(50)
+  @Max(5000)
   @IsOptional()
   dailyCaloriesGoal?: number;
 }

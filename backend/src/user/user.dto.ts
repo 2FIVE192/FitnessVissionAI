@@ -1,6 +1,6 @@
 import {
-  IsString, IsOptional, MinLength, IsIn,
-  IsNumber, IsPositive, IsInt,
+  IsString, IsOptional, MinLength, MaxLength, IsIn,
+  IsNumber, IsInt, Min, Max,
 } from 'class-validator';
 
 // -- update profile (partial) --
@@ -12,25 +12,29 @@ export class UpdateProfileDto {
   @IsOptional() @IsString()
   dateOfBirth?: string;
 
-  @IsOptional() @IsNumber() @IsPositive()
+  // 20–300 kg
+  @IsOptional() @IsNumber() @Min(20) @Max(300)
   weightKg?: number;
 
-  @IsOptional() @IsNumber() @IsPositive()
+  // 100–250 cm
+  @IsOptional() @IsNumber() @Min(100) @Max(250)
   heightCm?: number;
 
-  @IsOptional() @IsString() @MinLength(3)
+  @IsOptional() @IsString() @MinLength(3) @MaxLength(50)
   username?: string;
 
-  @IsOptional() @IsString() @MinLength(4)
+  @IsOptional() @IsString() @MinLength(4) @MaxLength(100)
   password?: string;
 }
 
 // -- update goals --
 
 export class UpdateGoalsDto {
-  @IsInt() @IsPositive()
+  // 500–50 000 steps
+  @IsInt() @Min(500) @Max(50000)
   stepsGoal: number;
 
-  @IsInt() @IsPositive()
+  // 50–5 000 kcal
+  @IsInt() @Min(50) @Max(5000)
   caloriesGoal: number;
 }

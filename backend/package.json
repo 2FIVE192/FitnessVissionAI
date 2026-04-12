@@ -8,6 +8,7 @@
     "start:prod": "node dist/main",
     "migrate": "ts-node src/database/migrate.ts",
     "seed": "ts-node src/database/seed.ts",
+    "seed:demo": "ts-node src/database/seed-demo-user.ts",
     "setup": "npm run migrate && npm run seed"
   },
   "dependencies": {
