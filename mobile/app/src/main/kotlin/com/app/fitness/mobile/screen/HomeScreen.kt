@@ -90,7 +90,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
     val user = state.user
     val activity = state.activity
 
-    val greeting = if (user != null) "Привет, ${user.name}" else "Привет"
+    val greeting = if (user != null) "Привет, ${user.name.split(" ").first()}" else "Привет"
 
     val dateTime = remember {
         SimpleDateFormat("dd MMMM HH:mm", Locale("ru"))
@@ -118,8 +118,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
                 Text(
                     text = dateTime,
                     fontFamily = FontFamily.SansSerif,
-                    fontSize = 24.sp,
-                    letterSpacing = 0.25.sp,
+                    fontSize = 15.sp,
                     color = INK_MUTED
                 )
             }

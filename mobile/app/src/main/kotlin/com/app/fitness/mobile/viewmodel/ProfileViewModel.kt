@@ -57,15 +57,28 @@ class ProfileViewModel(
         }
     }
 
-    fun onWeightChanged(v: String) { _state.update { it.copy(editWeightKg = v) } }
-    fun onHeightChanged(v: String) { _state.update { it.copy(editHeightCm = v) } }
-    fun onStepsGoalChanged(v: String) { _state.update { it.copy(editStepsGoal = v) } }
-    fun onCaloriesGoalChanged(v: String) { _state.update { it.copy(editCaloriesGoal = v) } }
+    fun onWeightChanged(v: String) { _state.update { it.copy(editWeightKg = v, error = null) } }
+    fun onHeightChanged(v: String) { _state.update { it.copy(editHeightCm = v, error = null) } }
+    fun onStepsGoalChanged(v: String) { _state.update { it.copy(editStepsGoal = v, error = null) } }
+    fun onCaloriesGoalChanged(v: String) { _state.update { it.copy(editCaloriesGoal = v, error = null) } }
 
     fun saveProfile() {
         val s = _state.value
         val weight = s.editWeightKg.toFloatOrNull()
         val height = s.editHeightCm.toFloatOrNull()
+
+        if (weight == null || height == null) {
+            _state.update { it.copy(error = "введите корректные числовые значения") }
+            return
+        }
+        if (weight < 20f || weight > 300f) {
+            _state.update { it.copy(error = "вес: от 20 до 300 кг") }
+            return
+        }
+        if (height < 100f || height > 250f) {
+            _state.update { it.copy(error = "рост: от 100 до 250 см") }
+            return
+        }
 
         viewModelScope.launch {
             _state.update { it.copy(isSaving = true, error = null, successMessage = null) }
@@ -90,8 +103,21 @@ class ProfileViewModel(
 
     fun saveGoals() {
         val s = _state.value
-        val steps = s.editStepsGoal.toIntOrNull() ?: return
-        val cals = s.editCaloriesGoal.toIntOrNull() ?: return
+        val steps = s.editStepsGoal.toIntOrNull()
+        val cals = s.editCaloriesGoal.toIntOrNull()
+
+        if (steps == null || cals == null) {
+            _state.update { it.copy(error = "введите целые числа") }
+            return
+        }
+        if (steps < 500 || steps > 50000) {
+            _state.update { it.copy(error = "цель по шагам: от 500 до 50 000") }
+            return
+        }
+        if (cals < 50 || cals > 5000) {
+            _state.update { it.copy(error = "цель по калориям: от 50 до 5 000") }
+            return
+        }
 
         viewModelScope.launch {
             _state.update { it.copy(isSaving = true, error = null, successMessage = null) }

@@ -7,12 +7,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -37,6 +39,7 @@ object Routes {
     const val WORKOUT_DETAIL = "workouts/{workoutId}"
     const val PROFILE = "profile"
     const val FITVISION = "fitvision"
+    const val ANALYTICS = "analytics"
 }
 
 // bottom nav items
@@ -76,6 +79,7 @@ fun AppNavGraph(sdk: FitnessSdk) {
     val bottomItems = listOf(
         BottomNavItem(Routes.HOME, "Главная") { Icon(Icons.Default.Home, contentDescription = "Главная") },
         BottomNavItem(Routes.WORKOUTS, "Тренировки") { Icon(Icons.Default.FitnessCenter, contentDescription = "Тренировки") },
+        BottomNavItem(Routes.ANALYTICS, "Прогресс") { Icon(Icons.Default.BarChart, contentDescription = "Прогресс") },
         BottomNavItem(Routes.FITVISION, "FitVision") { Icon(Icons.Default.AutoAwesome, contentDescription = "FitVision") },
         BottomNavItem(Routes.PROFILE, "Профиль") { Icon(Icons.Default.Person, contentDescription = "Профиль") },
     )
@@ -83,7 +87,7 @@ fun AppNavGraph(sdk: FitnessSdk) {
     // track whether we're on a screen that should show bottom nav
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val showBottomBar = currentRoute in listOf(Routes.HOME, Routes.WORKOUTS, Routes.FITVISION, Routes.PROFILE)
+    val showBottomBar = currentRoute in listOf(Routes.HOME, Routes.WORKOUTS, Routes.ANALYTICS, Routes.FITVISION, Routes.PROFILE)
 
     Scaffold(
         bottomBar = {
@@ -96,7 +100,7 @@ fun AppNavGraph(sdk: FitnessSdk) {
 
                         NavigationBarItem(
                             icon = item.icon,
-                            label = { Text(item.label) },
+                            label = { Text(item.label, maxLines = 1, fontSize = 10.sp) },
                             selected = selected,
                             onClick = {
                                 navController.navigate(item.route) {
@@ -292,6 +296,13 @@ fun AppNavGraph(sdk: FitnessSdk) {
                     onEnablePedometer = { startStepCountingWithPermission() },
                     onDisablePedometer = { sdk.stopStepCounting() }
                 )
+            }
+
+            composable(Routes.ANALYTICS) {
+                val vm: AnalyticsViewModel = viewModel(
+                    factory = AnalyticsViewModelFactory(sdk.activity)
+                )
+                AnalyticsScreen(viewModel = vm)
             }
 
             composable(Routes.FITVISION) {
