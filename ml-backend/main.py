@@ -11,7 +11,6 @@ from PIL import Image
 from aggregator import aggregate_activities
 from prompt_builder import build_prompt
 
-
 MODEL_ID       = "runwayml/stable-diffusion-v1-5"
 DEVICE         = "cuda" if torch.cuda.is_available() else "cpu"
 DTYPE          = torch.float16 if DEVICE == "cuda" else torch.float32
@@ -21,10 +20,11 @@ STRENGTH       = 0.45
 GUIDANCE_SCALE = 7.5
 NUM_STEPS      = 28
 
-
+# Global state 
 pipe: StableDiffusionImg2ImgPipeline | None = None
-# Serializes generation requests — the SD pipeline is not thread-safe
+# Сериализует запросы генерации 
 gen_lock = asyncio.Lock()
+
 
 
 @asynccontextmanager
@@ -53,7 +53,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-
+# Помощник по генерации (запускается в пуле потоков)
 def _generate_sync(image: Image.Image, prompt: str, negative_prompt: str) -> bytes:
     with torch.inference_mode():
         result = pipe(
@@ -69,6 +69,7 @@ def _generate_sync(image: Image.Image, prompt: str, negative_prompt: str) -> byt
     return buf.getvalue()
 
 
+# Endpoint 
 
 @app.post("/generate")
 async def generate(
@@ -84,7 +85,6 @@ async def generate(
     period_months: int = Form(...),           # 1 | 3 | 6
     goal: str = Form(...),                    # 'lose_weight' | 'gain_muscle' | 'maintain'
 ):
-    # Read and resize the uploaded photo
     raw = await photo.read()
     try:
         source = Image.open(io.BytesIO(raw)).convert("RGB")
@@ -92,21 +92,21 @@ async def generate(
         raise HTTPException(status_code=400, detail="Invalid image file")
     source = source.resize((IMAGE_W, IMAGE_H), Image.LANCZOS)
 
-    # Calculate activity stats and build the SD prompt
+    # Рассчет статистику активности и создание запроса SD
     stats = aggregate_activities(
         avg_steps_per_day, avg_calories_per_day, activity_type,
         active_days_per_week, period_months, weight_kg, height_cm, goal,
     )
     prompt, negative_prompt, mode = build_prompt(gender, age, height_cm, stats, period_months)
 
-    # Run the blocking pipeline call in a thread pool, one request at a time
+    # Запуск блокирующий конвейерный вызов в пуле потоков, по одному запросу за раз
     async with gen_lock:
         loop = asyncio.get_event_loop()
         image_bytes = await loop.run_in_executor(
             None, _generate_sync, source, prompt, negative_prompt
         )
 
-    # Return the generated JPEG; X-Mode tells the client which border color to use
+    # Возвращает сгенерированный JPEG; X-Mode сообщает клиенту, какой цвет границы использовать
     return Response(
         content=image_bytes,
         media_type="image/jpeg",
