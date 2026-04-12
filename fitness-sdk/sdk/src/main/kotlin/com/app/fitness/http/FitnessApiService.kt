@@ -31,6 +31,9 @@ internal interface FitnessApiService {
     @GET("activity/today")
     suspend fun getTodayActivity(): Response<DailyActivityDto>
 
+    @GET("activity/history")
+    suspend fun getActivityHistory(@Query("days") days: Int): Response<List<DailyActivityDto>>
+
     @POST("activity/steps")
     suspend fun saveSteps(@Body body: SaveStepsRequest): Response<DailyActivityDto>
 

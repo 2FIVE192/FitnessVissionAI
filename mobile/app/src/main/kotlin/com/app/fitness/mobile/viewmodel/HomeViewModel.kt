@@ -45,6 +45,16 @@ class HomeViewModel(
         val s = _state.value
         val steps = s.manualSteps.toIntOrNull() ?: 0
         val calories = s.manualCalories.toFloatOrNull() ?: return
+
+        if (steps < 0 || steps > 50000) {
+            _state.update { it.copy(error = "шаги: от 0 до 50 000") }
+            return
+        }
+        if (calories < 0f || calories > 5000f) {
+            _state.update { it.copy(error = "калории: от 0 до 5 000") }
+            return
+        }
+
         viewModelScope.launch {
             _state.update { it.copy(isSubmittingManual = true, error = null) }
             try {

@@ -67,7 +67,7 @@ fun ProfileScreen(
             .verticalScroll(rememberScrollState())
     ) {
         Text(
-            text = "профиль",
+            text = "Профиль",
             fontFamily = FontFamily.SansSerif,
             fontSize = 36.sp,
             letterSpacing = 0.25.sp,
@@ -101,7 +101,7 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         // body measurements section
-        Text("тело", fontFamily = FontFamily.SansSerif, fontSize = 15.sp, color = INK_MUTED)
+        Text("Тело", fontFamily = FontFamily.SansSerif, fontSize = 15.sp, color = INK_MUTED)
         Spacer(modifier = Modifier.height(8.dp))
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -134,13 +134,13 @@ fun ProfileScreen(
             colors = ButtonDefaults.buttonColors(containerColor = INK),
             shape = RoundedCornerShape(100.dp)
         ) {
-            Text("сохранить профиль", color = BG, fontFamily = FontFamily.SansSerif, fontSize = 16.sp)
+            Text("Сохранить профиль", color = BG, fontFamily = FontFamily.SansSerif, fontSize = 16.sp)
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
         // goals section
-        Text("дневные цели", fontFamily = FontFamily.SansSerif, fontSize = 15.sp, color = INK_MUTED)
+        Text("Дневные цели", fontFamily = FontFamily.SansSerif, fontSize = 15.sp, color = INK_MUTED)
         Spacer(modifier = Modifier.height(8.dp))
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -173,7 +173,7 @@ fun ProfileScreen(
             colors = ButtonDefaults.buttonColors(containerColor = INK),
             shape = RoundedCornerShape(100.dp)
         ) {
-            Text("сохранить цели", color = BG, fontFamily = FontFamily.SansSerif, fontSize = 16.sp)
+            Text("Сохранить цели", color = BG, fontFamily = FontFamily.SansSerif, fontSize = 16.sp)
         }
 
         // success / error messages
@@ -200,7 +200,7 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         // pedometer section
-        Text("шагомер", fontFamily = FontFamily.SansSerif, fontSize = 15.sp, color = INK_MUTED)
+        Text("Шагомер", fontFamily = FontFamily.SansSerif, fontSize = 15.sp, color = INK_MUTED)
         Spacer(modifier = Modifier.height(8.dp))
         Card(
             modifier = Modifier
@@ -244,7 +244,7 @@ fun ProfileScreen(
             border = androidx.compose.foundation.BorderStroke(2.dp, INK),
             shape = RoundedCornerShape(100.dp)
         ) {
-            Text("выйти", color = INK, fontFamily = FontFamily.SansSerif, fontSize = 16.sp)
+            Text("Выйти", color = INK, fontFamily = FontFamily.SansSerif, fontSize = 16.sp)
         }
 
         Spacer(modifier = Modifier.height(16.dp))

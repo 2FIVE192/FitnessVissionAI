@@ -55,7 +55,7 @@ fun WorkoutsScreen(
     ) {
         // tab row + filter button
         Row(verticalAlignment = Alignment.CenterVertically) {
-            val tabTitles = listOf("все", "рекомендуемые", "избранное")
+            val tabTitles = listOf("Все", "Для вас", "Избранное")
             TabRow(
                 selectedTabIndex = state.selectedTab,
                 modifier = Modifier.weight(1f),

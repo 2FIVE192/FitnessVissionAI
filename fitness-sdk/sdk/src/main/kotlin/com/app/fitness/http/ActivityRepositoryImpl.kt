@@ -23,6 +23,12 @@ internal class ActivityRepositoryImpl(
         return checkNotNull(resp.body()).toDomain()
     }
 
+    override suspend fun getActivityHistory(days: Int): List<DailyActivity> {
+        val resp = api.getActivityHistory(days)
+        check(resp.isSuccessful) { "getActivityHistory failed: HTTP ${resp.code()}" }
+        return checkNotNull(resp.body()).map { it.toDomain() }
+    }
+
     override suspend fun saveSteps(totalStepsSinceBoot: Int, timestamp: LocalDateTime) {
         val date = timestamp.toLocalDate()
         if (stepBaselineDate != date) {

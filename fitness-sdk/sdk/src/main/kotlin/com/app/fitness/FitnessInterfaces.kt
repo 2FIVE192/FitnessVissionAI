@@ -106,6 +106,7 @@ interface UserRepository {
 
 interface ActivityRepository {
     suspend fun getTodayActivity(): DailyActivity
+    suspend fun getActivityHistory(days: Int): List<DailyActivity>
     suspend fun saveSteps(totalStepsSinceBoot: Int, timestamp: LocalDateTime)
     suspend fun saveManualActivity(steps: Int, caloriesBurned: Float): DailyActivity
 }

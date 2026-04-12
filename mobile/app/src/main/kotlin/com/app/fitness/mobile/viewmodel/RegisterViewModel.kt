@@ -44,9 +44,7 @@ class RegisterViewModel(private val authRepo: AuthRepository) : ViewModel() {
     fun register() {
         val s = _state.value
 
-        // basic validation
-        val missingFields = s.name.isBlank() || s.username.isBlank() || s.password.length < 4
-        if (missingFields) {
+        if (s.name.isBlank() || s.username.isBlank() || s.password.length < 4) {
             _state.update { it.copy(error = "заполните все поля (пароль мин. 4 символа)") }
             return
         }
@@ -57,9 +55,31 @@ class RegisterViewModel(private val authRepo: AuthRepository) : ViewModel() {
         val cals = s.caloriesGoal.toIntOrNull()
         val dob = runCatching { LocalDate.parse(s.dateOfBirth) }.getOrNull()
 
-        val invalidNumbers = weight == null || height == null || steps == null || cals == null || dob == null
-        if (invalidNumbers) {
+        if (weight == null || height == null || steps == null || cals == null || dob == null) {
             _state.update { it.copy(error = "проверьте числовые поля и формат даты (гггг-мм-дд)") }
+            return
+        }
+
+        // Range checks with descriptive messages
+        if (weight < 20f || weight > 300f) {
+            _state.update { it.copy(error = "вес должен быть от 20 до 300 кг") }
+            return
+        }
+        if (height < 100f || height > 250f) {
+            _state.update { it.copy(error = "рост должен быть от 100 до 250 см") }
+            return
+        }
+        val ageYears = java.time.Period.between(dob, LocalDate.now()).years
+        if (ageYears < 5 || ageYears > 120) {
+            _state.update { it.copy(error = "укажите корректную дату рождения") }
+            return
+        }
+        if (steps < 500 || steps > 50000) {
+            _state.update { it.copy(error = "цель по шагам: от 500 до 50 000") }
+            return
+        }
+        if (cals < 50 || cals > 5000) {
+            _state.update { it.copy(error = "цель по калориям: от 50 до 5 000") }
             return
         }
 
@@ -71,11 +91,11 @@ class RegisterViewModel(private val authRepo: AuthRepository) : ViewModel() {
                 username = s.username,
                 password = s.password,
                 gender = s.gender,
-                dateOfBirth = dob!!,
-                weightKg = weight!!,
-                heightCm = height!!,
-                dailyStepsGoal = steps!!,
-                dailyCaloriesGoal = cals!!
+                dateOfBirth = dob,
+                weightKg = weight,
+                heightCm = height,
+                dailyStepsGoal = steps,
+                dailyCaloriesGoal = cals
             )
 
             result.onSuccess {

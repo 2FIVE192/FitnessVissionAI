@@ -16,7 +16,7 @@ import java.time.Period
 
 data class FitVisionState(
     val user: User? = null,
-    val activity: DailyActivity? = null,
+    val history: List<DailyActivity> = emptyList(),
     val isLoading: Boolean = true,
     val error: String? = null,
     // photo
@@ -48,8 +48,9 @@ class FitVisionViewModel(
         viewModelScope.launch {
             try {
                 val user = userRepo.getCurrentUser()
-                val activity = activityRepo.getTodayActivity()
-                _state.update { it.copy(user = user, activity = activity, isLoading = false) }
+                // Load 30 days of history for a representative activity average
+                val history = activityRepo.getActivityHistory(30)
+                _state.update { it.copy(user = user, history = history, isLoading = false) }
             } catch (e: Exception) {
                 _state.update { it.copy(isLoading = false, error = e.message) }
             }
@@ -80,9 +81,14 @@ class FitVisionViewModel(
         val photoBytes = s.selectedPhotoBytes ?: return
 
         val age = Period.between(user.dateOfBirth, LocalDate.now()).years
-        // use today's data if available, fall back to user's daily goals
-        val avgSteps = s.activity?.steps?.takeIf { it > 0 } ?: 0
-        val avgCalories = s.activity?.burnedCalories?.toFloat()?.takeIf { it > 0f } ?: 0f
+        // Compute averages from saved history (only days with actual data)
+        val activeDays = s.history.filter { it.steps > 0 || it.burnedCalories > 0 }
+        val avgSteps = if (activeDays.isNotEmpty())
+            (activeDays.sumOf { it.steps.toDouble() } / activeDays.size).toInt()
+        else 0
+        val avgCalories = if (activeDays.isNotEmpty())
+            (activeDays.sumOf { it.burnedCalories } / activeDays.size).toFloat()
+        else 0f
 
         viewModelScope.launch {
             _state.update { it.copy(isGenerating = true, error = null) }
