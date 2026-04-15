@@ -24,7 +24,6 @@ data class FitVisionState(
     val selectedPhotoBitmap: ImageBitmap? = null,
     // generation options
     val activityType: String = "walking",        // walking | running | strength | cycling
-    val activeDaysPerWeek: Int = 3,
     val periodMonths: Int = 6,                   // 1 | 3 | 6
     val goal: String = "lose_weight",            // lose_weight | gain_muscle | maintain
     // result
@@ -71,7 +70,6 @@ class FitVisionViewModel(
     }
 
     fun onActivityTypeChanged(type: String) { _state.update { it.copy(activityType = type) } }
-    fun onActiveDaysChanged(days: Int) { _state.update { it.copy(activeDaysPerWeek = days) } }
     fun onPeriodMonthsChanged(months: Int) { _state.update { it.copy(periodMonths = months) } }
     fun onGoalChanged(goal: String) { _state.update { it.copy(goal = goal) } }
 
@@ -103,7 +101,6 @@ class FitVisionViewModel(
                     avgStepsPerDay = avgSteps,
                     avgCaloriesPerDay = avgCalories,
                     activityType = s.activityType,
-                    activeDaysPerWeek = s.activeDaysPerWeek,
                     periodMonths = s.periodMonths,
                     goal = s.goal
                 )

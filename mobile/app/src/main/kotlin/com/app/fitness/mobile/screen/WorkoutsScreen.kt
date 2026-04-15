@@ -89,7 +89,7 @@ fun WorkoutsScreen(
 
         if (workoutsToShow.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("тренировки не найдены", fontFamily = FontFamily.SansSerif, fontSize = 15.sp, color = INK_MUTED)
+                Text("Тренировки не найдены", fontFamily = FontFamily.SansSerif, fontSize = 15.sp, color = INK_MUTED)
             }
         } else {
             LazyColumn(
@@ -170,10 +170,10 @@ private fun FilterBottomSheet(
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 32.dp)
         ) {
-            Text("фильтр тренировок", fontFamily = FontFamily.SansSerif, fontSize = 20.sp, color = INK)
+            Text("Фильтр тренировок", fontFamily = FontFamily.SansSerif, fontSize = 20.sp, color = INK)
             Spacer(Modifier.height(16.dp))
 
-            FilterSection("тип") {
+            FilterSection("Тип") {
                 WorkoutType.entries.forEach { type ->
                     val sel = type in types
                     FilterChip(
@@ -186,7 +186,7 @@ private fun FilterBottomSheet(
                 }
             }
 
-            FilterSection("сложность") {
+            FilterSection("Сложность") {
                 DifficultyLevel.entries.forEach { diff ->
                     val sel = diff in difficulties
                     FilterChip(
@@ -199,10 +199,10 @@ private fun FilterBottomSheet(
                 }
             }
 
-            FilterSection("длительность") {
+            FilterSection("Длительность") {
                 DurationRange.entries.forEach { dur ->
                     val label = when (dur) {
-                        DurationRange.SHORT    -> "до 3 мин"
+                        DurationRange.SHORT    -> "До 3 мин"
                         DurationRange.MEDIUM   -> "3–5 мин"
                         DurationRange.LONG     -> "5–8 мин"
                         DurationRange.EXTENDED -> "8+ мин"
@@ -218,7 +218,7 @@ private fun FilterBottomSheet(
                 }
             }
 
-            FilterSection("группа мышц") {
+            FilterSection("Группа мышц") {
                 MuscleGroup.entries.forEach { mg ->
                     val sel = mg in muscleGroups
                     FilterChip(
@@ -240,7 +240,7 @@ private fun FilterBottomSheet(
                     border = androidx.compose.foundation.BorderStroke(2.dp, INK),
                     shape = RoundedCornerShape(100.dp)
                 ) {
-                    Text("сбросить", color = INK, fontFamily = FontFamily.SansSerif)
+                    Text("Сбросить", color = INK, fontFamily = FontFamily.SansSerif)
                 }
                 Button(
                     onClick = { onApply(WorkoutFilter(types, muscleGroups, difficulties, durations)) },
@@ -248,7 +248,7 @@ private fun FilterBottomSheet(
                     colors = ButtonDefaults.buttonColors(containerColor = INK),
                     shape = RoundedCornerShape(100.dp)
                 ) {
-                    Text("применить", color = BG, fontFamily = FontFamily.SansSerif)
+                    Text("Применить", color = BG, fontFamily = FontFamily.SansSerif)
                 }
             }
         }
@@ -309,25 +309,25 @@ private fun WorkoutCard(
 }
 
 private fun WorkoutType.toRu() = when (this) {
-    WorkoutType.STRENGTH   -> "силовая"
-    WorkoutType.CARDIO     -> "кардио"
-    WorkoutType.STRETCHING -> "растяжка"
-    WorkoutType.YOGA       -> "йога"
-    WorkoutType.HIIT       -> "виит"
+    WorkoutType.STRENGTH   -> "Силовая"
+    WorkoutType.CARDIO     -> "Кардио"
+    WorkoutType.STRETCHING -> "Растяжка"
+    WorkoutType.YOGA       -> "Йога"
+    WorkoutType.HIIT       -> "ВИИТ"
 }
 
 private fun DifficultyLevel.toRu() = when (this) {
-    DifficultyLevel.EASY   -> "лёгкий"
-    DifficultyLevel.MEDIUM -> "средний"
-    DifficultyLevel.HARD   -> "тяжёлый"
+    DifficultyLevel.EASY   -> "Лёгкий"
+    DifficultyLevel.MEDIUM -> "Средний"
+    DifficultyLevel.HARD   -> "Тяжёлый"
 }
 
 private fun MuscleGroup.toRu() = when (this) {
-    MuscleGroup.CHEST     -> "грудь"
-    MuscleGroup.BACK      -> "спина"
-    MuscleGroup.ARMS      -> "руки"
-    MuscleGroup.ABS       -> "пресс"
-    MuscleGroup.GLUTES    -> "ягодицы"
-    MuscleGroup.LEGS      -> "ноги"
-    MuscleGroup.FULL_BODY -> "всё тело"
+    MuscleGroup.CHEST     -> "Грудь"
+    MuscleGroup.BACK      -> "Спина"
+    MuscleGroup.ARMS      -> "Руки"
+    MuscleGroup.ABS       -> "Пресс"
+    MuscleGroup.GLUTES    -> "Ягодицы"
+    MuscleGroup.LEGS      -> "Ноги"
+    MuscleGroup.FULL_BODY -> "Всё тело"
 }

@@ -21,7 +21,6 @@ internal interface FitVisionApiService {
         @Part("avg_steps_per_day") avgStepsPerDay: RequestBody,
         @Part("avg_calories_per_day") avgCaloriesPerDay: RequestBody,
         @Part("activity_type") activityType: RequestBody,
-        @Part("active_days_per_week") activeDaysPerWeek: RequestBody,
         @Part("period_months") periodMonths: RequestBody,
         @Part("goal") goal: RequestBody,
     ): Response<ResponseBody>

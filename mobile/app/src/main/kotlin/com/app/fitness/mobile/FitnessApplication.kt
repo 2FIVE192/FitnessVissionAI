@@ -12,9 +12,10 @@ class FitnessApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // 10.0.2.2 is localhost from the Android emulator's perspective
-        val backendUrl = "http://10.0.2.2:3000"
-        val mlBackendUrl = "http://10.0.2.2:8000"
+        // URLs are injected at build time from local.properties (backend.url / ml.backend.url).
+        // Defaults to 10.0.2.2 (host machine as seen from the Android emulator).
+        val backendUrl   = BuildConfig.BACKEND_URL
+        val mlBackendUrl = BuildConfig.ML_BACKEND_URL
 
         sdk = FitnessSdk(
             context = this,

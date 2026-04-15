@@ -30,7 +30,6 @@ internal class GenerationRepositoryImpl(
                 avgStepsPerDay      = request.avgStepsPerDay.toString().asText(),
                 avgCaloriesPerDay   = request.avgCaloriesPerDay.toString().asText(),
                 activityType        = request.activityType.asText(),
-                activeDaysPerWeek   = request.activeDaysPerWeek.toString().asText(),
                 periodMonths        = request.periodMonths.toString().asText(),
                 goal                = request.goal.asText(),
             )

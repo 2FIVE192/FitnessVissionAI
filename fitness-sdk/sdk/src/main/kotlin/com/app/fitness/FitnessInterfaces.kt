@@ -148,7 +148,6 @@ data class GenerationRequest(
     val avgStepsPerDay: Int,
     val avgCaloriesPerDay: Float,
     val activityType: String,    // "running" | "walking" | "strength" | "cycling"
-    val activeDaysPerWeek: Int,
     val periodMonths: Int,       // 1 | 3 | 6
     val goal: String             // "lose_weight" | "gain_muscle" | "maintain"
 )

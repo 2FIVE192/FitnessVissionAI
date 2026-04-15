@@ -93,7 +93,7 @@ class WorkoutDetailViewModel(
             try {
                 val session = sessionRepo.completeSession(sid).getOrThrow()
                 _state.update {
-                    it.copy(isSessionActive = false, isCompleted = true, completedMessage = "тренировка завершена! сожжено ~${session.burnedCalories.toInt()} ккал")
+                    it.copy(isSessionActive = false, isCompleted = true, completedMessage = "Тренировка завершена! Сожжено ~${session.burnedCalories.toInt()} ккал")
                 }
             } catch (e: Exception) {
                 _state.update { it.copy(isSessionActive = false, error = e.message) }
@@ -121,7 +121,7 @@ class WorkoutDetailViewModel(
                     it.copy(
                         isSessionActive = false,
                         isCompleted = true,
-                        completedMessage = "тренировка завершена! сожжено ~${session.burnedCalories.toInt()} ккал"
+                        completedMessage = "Тренировка завершена! Сожжено ~${session.burnedCalories.toInt()} ккал"
                     )
                 }
             } catch (e: Exception) {
@@ -138,7 +138,7 @@ class WorkoutDetailViewModel(
             try {
                 sessionRepo.abandonSession(sid)
                 _state.update {
-                    it.copy(isSessionActive = false, completedMessage = "тренировка прервана")
+                    it.copy(isSessionActive = false, completedMessage = "Тренировка прервана")
                 }
             } catch (e: Exception) {
                 _state.update { it.copy(error = e.message) }

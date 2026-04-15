@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.fitness.GenerationMode
 import com.app.fitness.mobile.viewmodel.FitVisionViewModel
-import kotlin.math.roundToInt
 
 private val BG = Color(0xFFF8F8F8)
 private val INK = Color(0xFF2C2C2C)
@@ -199,28 +198,6 @@ fun FitVisionScreen(viewModel: FitVisionViewModel) {
                 )
             }
         }
-
-        Spacer(Modifier.height(20.dp))
-
-        // ── Days per week ──────────────────────────────────────────────────
-
-        Text(
-            "Дней активности в неделю: ${state.activeDaysPerWeek}",
-            fontFamily = FontFamily.SansSerif,
-            fontSize = 15.sp,
-            color = INK_MUTED
-        )
-        Slider(
-            value = state.activeDaysPerWeek.toFloat(),
-            onValueChange = { viewModel.onActiveDaysChanged(it.roundToInt()) },
-            valueRange = 1f..7f,
-            steps = 5,
-            colors = SliderDefaults.colors(
-                thumbColor = INK,
-                activeTrackColor = INK,
-                inactiveTrackColor = INK_MUTED
-            )
-        )
 
         Spacer(Modifier.height(20.dp))
 

@@ -92,16 +92,6 @@ uvicorn main:app --host 0.0.0.0 --port 8000
 
 При первом запуске скачивается модель Stable Diffusion v1-5 (~4 ГБ). Последующие запуски занимают ~30 секунд. Готовность обозначается строкой `Model ready`.
 
-#### Доступ с физического устройства
-
-Если приложение запускается на реальном телефоне вне локальной сети, ML-бэкенд можно пробросить через Cloudflare Tunnel:
-
-```bash
-cloudflared.exe tunnel --url http://localhost:8000
-```
-
-Полученный URL подставить в `FitnessApplication.kt` в поле `mlBackendUrl`.
-
 ### 3. Мобильное приложение
 
 1. Открыть папку `mobile/` в Android Studio
@@ -116,6 +106,32 @@ cloudflared.exe tunnel --url http://localhost:8000
 ```
 PostgreSQL (Docker) → NestJS (npm run dev) → ML-бэкенд (uvicorn) → Android-эмулятор
 ```
+
+---
+
+## Сборка APK для реального устройства
+
+При запуске на реальном телефоне адрес `10.0.2.2` недоступен — нужно указать адреса, достижимые из сети устройства. URL-адреса бэкендов задаются в `mobile/local.properties` и вшиваются в APK через `BuildConfig` при сборке.
+
+### Cloudflare Tunnel (любая сеть, в том числе мобильный интернет)
+
+Запустите два туннеля — по одному на каждый бэкенд:
+
+```bash
+# терминал 1
+cloudflared tunnel --url http://localhost:3000
+
+# терминал 2
+cloudflared tunnel --url http://localhost:8000
+```
+
+Каждая команда выводит публичный HTTPS-адрес вида `https://xxxx.trycloudflare.com`. Подставьте их в `mobile/local.properties`:
+
+```properties
+backend.url=https://xxxx.trycloudflare.com
+ml.backend.url=https://yyyy.trycloudflare.com
+```
+Адреса меняются при каждом перезапуске `cloudflared`.
 
 ## Валидация входных данных
 

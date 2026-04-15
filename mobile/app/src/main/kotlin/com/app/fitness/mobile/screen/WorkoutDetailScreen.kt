@@ -1,5 +1,6 @@
 package com.app.fitness.mobile.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -33,20 +34,53 @@ fun WorkoutDetailScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
+    // Show confirmation before abandoning via Back gesture or nav icon
+    var showAbandonDialog by remember { mutableStateOf(false) }
+    // Navigate back only after abandonSession() has finished (isSessionActive flips to false)
+    var navigateBackAfterAbandon by remember { mutableStateOf(false) }
+    LaunchedEffect(state.isSessionActive) {
+        if (navigateBackAfterAbandon && !state.isSessionActive) onBack()
+    }
+
+    BackHandler(enabled = state.isSessionActive) { showAbandonDialog = true }
+
+    if (showAbandonDialog) {
+        AlertDialog(
+            onDismissRequest = { showAbandonDialog = false },
+            containerColor = BG,
+            title = { Text("Прервать тренировку?", fontFamily = FontFamily.SansSerif, color = INK) },
+            text = { Text("Прогресс будет сохранён как прерванная тренировка.", fontFamily = FontFamily.SansSerif, color = INK) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showAbandonDialog = false
+                    navigateBackAfterAbandon = true
+                    viewModel.abandonSession()
+                }) {
+                    Text("Прервать", color = MaterialTheme.colorScheme.error, fontFamily = FontFamily.SansSerif)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showAbandonDialog = false }) {
+                    Text("Продолжить", color = INK, fontFamily = FontFamily.SansSerif)
+                }
+            }
+        )
+    }
+
     Scaffold(
         containerColor = BG,
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        state.workout?.title ?: "тренировка",
+                        state.workout?.title ?: "Тренировка",
                         fontFamily = FontFamily.SansSerif,
                         fontSize = 20.sp,
                         color = INK
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = { if (state.isSessionActive) showAbandonDialog = true else onBack() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "назад",
@@ -91,7 +125,7 @@ fun WorkoutDetailScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                "ожидаемый расход: ${state.estimatedCalories.toInt()} ккал",
+                "Ожидаемый расход: ${state.estimatedCalories.toInt()} ккал",
                 fontFamily = FontFamily.SansSerif,
                 fontSize = 15.sp,
                 color = INK
@@ -99,7 +133,7 @@ fun WorkoutDetailScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text("упражнения", fontFamily = FontFamily.SansSerif, fontSize = 15.sp, color = INK_MUTED)
+            Text("Упражнения", fontFamily = FontFamily.SansSerif, fontSize = 15.sp, color = INK_MUTED)
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -126,7 +160,7 @@ fun WorkoutDetailScreen(
                             color = if (isActive) BG else INK
                         )
                         Text(
-                            "${exercise.muscleGroup.toRu()} · ${exercise.durationSeconds}с · отдых ${exercise.restAfterSeconds}с",
+                            "${exercise.muscleGroup.toRu()} · ${exercise.durationSeconds}с · Отдых ${exercise.restAfterSeconds}с",
                             fontFamily = FontFamily.SansSerif,
                             fontSize = 12.sp,
                             color = if (isActive) Color(0xCCF8F8F8) else INK_MUTED
@@ -155,7 +189,7 @@ fun WorkoutDetailScreen(
                     border = androidx.compose.foundation.BorderStroke(2.dp, INK),
                     shape = RoundedCornerShape(100.dp)
                 ) {
-                    Text("прервать", color = INK, fontFamily = FontFamily.SansSerif, fontSize = 16.sp)
+                    Text("Прервать", color = INK, fontFamily = FontFamily.SansSerif, fontSize = 16.sp)
                 }
             } else {
                 Button(
@@ -164,7 +198,7 @@ fun WorkoutDetailScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = INK),
                     shape = RoundedCornerShape(100.dp)
                 ) {
-                    Text("начать тренировку", color = BG, fontFamily = FontFamily.SansSerif, fontSize = 16.sp)
+                    Text("Начать тренировку", color = BG, fontFamily = FontFamily.SansSerif, fontSize = 16.sp)
                 }
             }
 
@@ -183,11 +217,11 @@ fun WorkoutDetailScreen(
             AlertDialog(
                 onDismissRequest = {},
                 containerColor = BG,
-                title = { Text("поздравляем!", fontFamily = FontFamily.SansSerif, color = INK) },
+                title = { Text("Поздравляем!", fontFamily = FontFamily.SansSerif, color = INK) },
                 text = { Text(state.completedMessage!!, fontFamily = FontFamily.SansSerif, color = INK) },
                 confirmButton = {
                     TextButton(onClick = onBack) {
-                        Text("ок", color = INK, fontFamily = FontFamily.SansSerif)
+                        Text("ОК", color = INK, fontFamily = FontFamily.SansSerif)
                     }
                 }
             )
@@ -196,25 +230,25 @@ fun WorkoutDetailScreen(
 }
 
 private fun WorkoutType.toRu() = when (this) {
-    WorkoutType.STRENGTH   -> "силовая"
-    WorkoutType.CARDIO     -> "кардио"
-    WorkoutType.STRETCHING -> "растяжка"
-    WorkoutType.YOGA       -> "йога"
-    WorkoutType.HIIT       -> "виит"
+    WorkoutType.STRENGTH   -> "Силовая"
+    WorkoutType.CARDIO     -> "Кардио"
+    WorkoutType.STRETCHING -> "Растяжка"
+    WorkoutType.YOGA       -> "Йога"
+    WorkoutType.HIIT       -> "ВИИТ"
 }
 
 private fun DifficultyLevel.toRu() = when (this) {
-    DifficultyLevel.EASY   -> "лёгкий"
-    DifficultyLevel.MEDIUM -> "средний"
-    DifficultyLevel.HARD   -> "тяжёлый"
+    DifficultyLevel.EASY   -> "Лёгкий"
+    DifficultyLevel.MEDIUM -> "Средний"
+    DifficultyLevel.HARD   -> "Тяжёлый"
 }
 
 private fun MuscleGroup.toRu() = when (this) {
-    MuscleGroup.CHEST     -> "грудь"
-    MuscleGroup.BACK      -> "спина"
-    MuscleGroup.ARMS      -> "руки"
-    MuscleGroup.ABS       -> "пресс"
-    MuscleGroup.GLUTES    -> "ягодицы"
-    MuscleGroup.LEGS      -> "ноги"
-    MuscleGroup.FULL_BODY -> "всё тело"
+    MuscleGroup.CHEST     -> "Грудь"
+    MuscleGroup.BACK      -> "Спина"
+    MuscleGroup.ARMS      -> "Руки"
+    MuscleGroup.ABS       -> "Пресс"
+    MuscleGroup.GLUTES    -> "Ягодицы"
+    MuscleGroup.LEGS      -> "Ноги"
+    MuscleGroup.FULL_BODY -> "Всё тело"
 }
